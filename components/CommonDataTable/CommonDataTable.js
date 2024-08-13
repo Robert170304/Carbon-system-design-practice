@@ -1,6 +1,5 @@
 import {
   DataTable,
-  Dropdown,
   OverflowMenu,
   OverflowMenuItem,
   Table,
@@ -14,39 +13,22 @@ import {
   TableToolbarContent,
   TableToolbarSearch,
 } from "@carbon/react";
-import React, { useState } from "react";
+import React from "react";
 
 const CommonDataTable = ({
   columns,
   tableData,
   actionEvent = () => {},
   actionCommands = [],
+  renderFilters = () => {
+    return <div />;
+  },
 }) => {
-  const [selectedStatus, setSelectedStatus] = useState("all");
-
-  const statusOptions = [
-    { id: "all", text: "All" },
-    { id: "active", text: "Active" },
-    { id: "inActive", text: "In Active" },
-    { id: "pending", text: "Pending" },
-    { id: "suspended", text: "Suspended" },
-  ];
-
-  const filteredRows = tableData.filter((row) => {
-    const matchesStatus =
-      selectedStatus === "all" ||
-      row.status.toLowerCase() ===
-        statusOptions
-          .find((status) => status.id === selectedStatus)
-          .text.toLowerCase();
-    return matchesStatus;
-  });
-
   return (
     <DataTable
       isSortable
       headers={columns}
-      rows={filteredRows}
+      rows={tableData}
       render={({
         rows,
         headers,
@@ -56,22 +38,12 @@ const CommonDataTable = ({
         getToolbarProps,
         onInputChange,
       }) => {
-        console.log("🚀 ~ CommonDataTable ~ rows:", rows);
         return (
           <TableContainer title="User Management" description="">
             <TableToolbar {...getToolbarProps()}>
               <TableToolbarContent>
                 <TableToolbarSearch onChange={onInputChange} />
-                <Dropdown
-                  id="status-filter"
-                  titleText="Filter by status"
-                  label="Status"
-                  items={statusOptions}
-                  itemToString={(item) => (item ? item.text : "")}
-                  onChange={({ selectedItem }) =>
-                    setSelectedStatus(selectedItem.id)
-                  }
-                />
+                {renderFilters()}
               </TableToolbarContent>
             </TableToolbar>
             <Table {...getTableProps()}>
@@ -91,7 +63,6 @@ const CommonDataTable = ({
               </TableHead>
               <TableBody>
                 {rows.map((rowData) => {
-                  console.log("🚀 ~ {rows.map ~ rowData:", rowData);
                   return (
                     <React.Fragment key={rowData.id}>
                       <TableRow

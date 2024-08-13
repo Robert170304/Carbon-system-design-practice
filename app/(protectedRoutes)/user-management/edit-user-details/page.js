@@ -1,7 +1,9 @@
 /* eslint-disable import/no-unresolved */
 "use client";
 
-import { UsersDataContext } from "@/app/context/UsersDataContext";
+import { showNotification } from "@/app/managers/NotificationManager";
+import { get, post } from "@/app/utilities/apiHelper";
+import { USER_ROLES, USER_STATUSES } from "@/app/utilities/utility";
 import CommonBreadCrumb from "@/components/CommonBreadCrumb/CommonBreadCrumb";
 import {
   Button,
@@ -15,19 +17,7 @@ import {
   TextInput,
 } from "@carbon/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useContext, useEffect, useState } from "react";
-
-const USER_ROLES = [
-  { value: "admin", label: "Admin" },
-  { value: "user", label: "User" },
-  { value: "moderator", label: "Moderator" },
-];
-const USER_STATUSES = [
-  { value: "active", label: "Active" },
-  { value: "inActive", label: "In Active" },
-  { value: "suspended", label: "Suspended" },
-  { value: "pending", label: "Pending" },
-];
+import React, { useEffect, useState } from "react";
 
 const breadCrumbsData = [
   {
@@ -35,55 +25,81 @@ const breadCrumbsData = [
     hasLink: true,
     link: "/user-management",
     isCurrentPage: false,
+    id: 0,
   },
-  { name: "Edit User Details", hasLink: false, isCurrentPage: true },
+  { name: "Edit User Details", hasLink: false, isCurrentPage: true, id: 1 },
 ];
 
 export default function EditUser() {
-  const { users = [], setUsers } = useContext(UsersDataContext);
   const router = useRouter();
   const searchParams = useSearchParams();
   const userId = searchParams.get("userId");
   const [userData, setUserData] = useState({});
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
   console.log("🚀 ~ EditUser ~ userData:", userData);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     role: "",
     status: "",
   });
 
+  const getUserData = async () => {
+    try {
+      const response = await get(`/users/${Number(userId)}`);
+
+      if (response.status === 200) {
+        setFormData({
+          name: response.user.name || "",
+          role: response.user.role || "",
+          status: response.user.status || "",
+        });
+        setUserData(response.user);
+      } else {
+        showNotification(
+          response.message || "Failed to created user.",
+          "error"
+        );
+      }
+    } catch (error) {
+      showNotification(error.message || "An error occurred.", "error");
+      console.error("Error fetching users:", error);
+    }
+  };
+
   useEffect(() => {
-    const findUser = users.find((el) => el.id === Number(userId)) || {};
-    console.log("🚀 ~ useEffect ~ findUser:", findUser);
-    setUserData(findUser);
-    setFormData({
-      name: findUser.name || "",
-      role: findUser.role || "",
-      status: findUser.status || "",
-    });
-  }, [userId, users]);
+    async function runFuncToGetUser() {
+      await getUserData();
+    }
+    runFuncToGetUser();
+  }, [userId]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    setUsers((prevUsers) => {
-      console.log("🚀 ~ setUsers ~ prevUsers:", prevUsers);
-      return prevUsers.map((user) => {
-        if (user.id === Number(userId)) {
-          return {
-            ...user,
-            role: formData.role,
-            name: formData.name,
-            status: formData.status,
-          };
-        }
-        return user;
+  async function updateUserDetails() {
+    try {
+      const response = await post(`/update-user-detail`, {
+        user: {
+          role: formData.role,
+          name: formData.name,
+          status: formData.status,
+          id: userId,
+        },
       });
-    });
 
-    router.back();
-    console.log("🚀 ~ handleSubmit ~ users:", users);
+      if (response.status === 200) {
+        router.push("/user-management");
+        showNotification(
+          response.message || "User has been updated successfully."
+        );
+      } else {
+        showNotification(response.message || "Failed to update user.", "error");
+      }
+    } catch (error) {
+      showNotification(error.message || "An error occurred.", "error");
+    }
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await updateUserDetails();
   };
 
   const handleChange = (e, fieldName) => {

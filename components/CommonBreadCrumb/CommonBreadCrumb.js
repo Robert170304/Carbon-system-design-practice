@@ -3,7 +3,6 @@ import Link from "next/link";
 import React from "react";
 
 const CommonBreadCrumb = ({ breadCrumbsData = [] }) => {
-  console.log("🚀 ~ CommonBreadCrumb ~ breadCrumbsData:", breadCrumbsData);
   return (
     <Breadcrumb>
       {breadCrumbsData.map((breadCrumb) => {

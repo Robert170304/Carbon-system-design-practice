@@ -4,22 +4,26 @@ import {
   HeaderContainer,
   HeaderName,
   Header,
-  SkipToContent,
   HeaderMenuButton,
   SideNav,
   SideNavItems,
   HeaderSideNavItems,
   HeaderMenuItem,
   HeaderNavigation,
+  HeaderGlobalBar,
+  HeaderGlobalAction,
 } from "@carbon/react";
+import { UserAvatar } from "@carbon/icons-react";
 import Link from "next/link";
-import React from "react";
+import React, { useRef } from "react";
+import { useRouter } from "next/navigation";
 
 function HeaderCompo() {
+  const router = useRouter();
+  const wrapperRef = useRef();
   return (
     <HeaderContainer
       render={({ isSideNavExpanded, onClickSideNavExpand }) => {
-        console.log("🚀 ~ HeaderCompo ~ isSideNavExpanded:", isSideNavExpanded);
         return (
           <Header aria-label="Carbon Tutorial">
             <HeaderMenuButton
@@ -28,7 +32,9 @@ function HeaderCompo() {
               isActive={isSideNavExpanded}
             />
             <Link href="/" passHref legacyBehavior>
-              <HeaderName prefix="Carbon">Admin Panel</HeaderName>
+              <div ref={wrapperRef}>
+                <HeaderName prefix="Carbon">Admin Panel</HeaderName>
+              </div>
             </Link>
             <HeaderNavigation aria-label="Carbon Tutorial">
               <Link href="/user-management" passHref legacyBehavior>
@@ -48,6 +54,16 @@ function HeaderCompo() {
                 </HeaderSideNavItems>
               </SideNavItems>
             </SideNav>
+            <HeaderGlobalBar>
+              <HeaderGlobalAction
+                aria-label="Profile"
+                tooltipAlignment="start"
+                className="action-icons"
+                onClick={() => router.push(`/login`)}
+              >
+                <UserAvatar size={20} />
+              </HeaderGlobalAction>
+            </HeaderGlobalBar>
           </Header>
         );
       }}

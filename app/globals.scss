@@ -2,8 +2,8 @@
 
 @use "../components/Header/HeaderCompo.scss";
 @use "../components/CommonDataTable/CommonDataTable.scss";
-@use "../app/user-management/user-management.scss";
-@use "../app/user-management/edit-user-details/edit-user-details.scss";
+@use "../app/\(protectedRoutes\)/user-management/user-management.scss";
+@use "../app/\(protectedRoutes\)/user-management/edit-user-details/edit-user-details.scss";
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
