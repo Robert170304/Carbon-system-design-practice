@@ -11,9 +11,10 @@ import {
 } from "@carbon/react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { showNotification } from "../../managers/NotificationManager";
 import Link from "next/link";
-import { post } from "../../utilities/apiHelper";
+import Cookie from "js-cookie";
+import { post } from "@/app/utilities/apiHelper";
+import { showNotification } from "@/app/managers/NotificationManager";
 
 function Login() {
   const router = useRouter();
@@ -42,6 +43,7 @@ function Login() {
           "userData",
           JSON.stringify({ token: resData.token, ...resData.user })
         );
+        Cookie.set("token", resData.token, { expires: 7 }); // Setting cookie with 7 days expiry
         showNotification(
           resData.message || "User has been updated successfully."
         );
@@ -79,11 +81,13 @@ function Login() {
                   labelText="Email"
                   placeholder="Enter your email"
                   value={formData.email}
+                  required
                   onChange={(e) => handleChange(e, "email")}
                 />
               </Column>
               <Column lg={8} md={8} sm={4} className="repo-page__r1">
                 <TextInput
+                  id="password"
                   name="password"
                   placeholder="Enter your password"
                   labelText="Password"
@@ -96,7 +100,9 @@ function Login() {
               </Column>
             </Grid>
           </FormGroup>
-          <Button type="submit">Login</Button>
+          <Button id="login-submit-btn" type="submit">
+            Login
+          </Button>
         </Stack>
       </Form>
       <div>

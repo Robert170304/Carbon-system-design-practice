@@ -1,14 +1,14 @@
 /* eslint-disable import/no-unresolved */
 "use client";
 
+import { showNotification } from "@/app/managers/NotificationManager";
+import { del, post } from "@/app/utilities/apiHelper";
+import { defaultApiErrorMessage } from "@/app/utilities/utility";
 import CommonBreadCrumb from "@/components/CommonBreadCrumb/CommonBreadCrumb";
 import CommonDataTable from "@/components/CommonDataTable/CommonDataTable";
 import { Grid, Column, Pagination, Loading, Dropdown } from "@carbon/react";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
-import { showNotification } from "../../managers/NotificationManager";
-import { del, post } from "../../utilities/apiHelper";
-import { defaultApiErrorMessage } from "../../utilities/utility";
 
 const headers = [
   {
@@ -63,7 +63,7 @@ function UserManagement() {
         },
       });
       console.log("🚀 ~ getUsers ~ response:", response);
-      const resData = response.data;
+      const resData = response;
       if (resData.status === 200) {
         setTableData(resData.usersData || []);
       } else {

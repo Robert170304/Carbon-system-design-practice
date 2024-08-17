@@ -36,7 +36,7 @@ function HeaderCompo() {
                 <HeaderName prefix="Carbon">Admin Panel</HeaderName>
               </div>
             </Link>
-            <HeaderNavigation aria-label="Carbon Tutorial">
+            <HeaderNavigation aria-label="Carbon Tutoriall">
               <Link href="/user-management" passHref legacyBehavior>
                 <HeaderMenuItem>User Management</HeaderMenuItem>
               </Link>

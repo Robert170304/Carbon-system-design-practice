@@ -1,5 +1,8 @@
 "use client";
 
+import { showNotification } from "@/app/managers/NotificationManager";
+import { post } from "@/app/utilities/apiHelper";
+import { USER_ROLES } from "@/app/utilities/utility";
 import {
   Button,
   Column,
@@ -13,11 +16,8 @@ import {
 } from "@carbon/react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { showNotification } from "../../managers/NotificationManager";
-import { USER_ROLES } from "../../utilities/utility";
-import { post } from "../../utilities/apiHelper";
 
-function Login() {
+function Register() {
   const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
@@ -28,10 +28,10 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await login();
+    await registerUser();
   };
 
-  async function login() {
+  async function registerUser() {
     try {
       const response = await post("/register-user", {
         user: {
@@ -131,4 +131,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Register;
