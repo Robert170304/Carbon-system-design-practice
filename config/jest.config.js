@@ -2,7 +2,7 @@ module.exports = {
   rootDir: "../",
   setupFilesAfterEnv: ["./config/jest.setup.js"],
   transform: {
-    "^.+\\.js$": ["babel-jest", { configFile: "./config/.babelrc" }],
+    "^.+\\.(js|jsx)$": ["babel-jest", { configFile: "./config/.babelrc" }],
   },
   transformIgnorePatterns: [
     "/node_modules/(?!string-width|cliui)", // Add any other modules that need to be transformed
