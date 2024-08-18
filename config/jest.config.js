@@ -4,9 +4,7 @@ module.exports = {
   transform: {
     "^.+\\.(js|jsx)$": ["babel-jest", { configFile: "./config/.babelrc" }],
   },
-  transformIgnorePatterns: [
-    "/node_modules/(?!string-width|cliui)", // Add any other modules that need to be transformed
-  ],
+  transformIgnorePatterns: ["/node_modules/(?!string-width|cliui)"],
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/$1",
     "\\.(css|less|scss|sss|styl)$": "<rootDir>/node_modules/jest-css-modules",
